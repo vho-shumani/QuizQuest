@@ -11,3 +11,23 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f"User('{self.username}-{self.id}')"
+
+class Quiz(db.Model):
+    """The schema for the quizes"""
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), unique=True, nullable=False)
+    description = db.Column(db.String(200), unique=True, nullable=False)
+    questions = db.relationship('Question', backref='quiz', lazy=True)
+
+    def __repr__(self):
+        return f"Quiz('{self.title}-{self.id}')"
+    
+class Quiz(db.Model):
+    """The schema for the quizes"""
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), unique=True, nullable=False)
+    description = db.Column(db.String(200), unique=True, nullable=False)
+    questions = db.relationship('Question', backref='quiz', lazy=True)
+
+    def __repr__(self):
+        return f"Quiz('{self.title}-{self.id}')"

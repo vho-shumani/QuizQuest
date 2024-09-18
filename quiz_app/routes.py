@@ -1,7 +1,7 @@
 """Module consist of routes/views for application"""
 from flask import Blueprint, render_template, flash, request, redirect, url_for
 from .forms import LoginForm, RegistrationForm
-from flask_login import current_user, login_user
+from flask_login import current_user, login_user, logout_user, login_required
 from .models import User
 from . import bcrypt, db
 
@@ -37,7 +37,7 @@ def login():
 
 
 @views.route('/signup', methods=['GET', 'POST'])
-def sign():
+def signup():
     """Renders signup templates"""
     if current_user.is_authenticated:
         return redirect(url_for('views.index'))
@@ -65,3 +65,10 @@ def sign():
     elif request.method == 'POST':
         flash('Error occurred creating account', 'error')
     return render_template('signup.html', form=form)
+
+@views.route('/logout')
+@login_required
+def logout():
+    """handles logout of user"""
+    logout_user()
+    return redirect(url_for('views.login'))
