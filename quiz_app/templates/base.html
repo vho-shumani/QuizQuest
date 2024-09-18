@@ -10,8 +10,8 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid hstack gap-3" >
-            <a class="navbar-brand" href="/home">QUIZQUEST</a>
+        <div class="container-sm hstack gap-3" >
+            <a class="navbar-brand" href="{{ url_for('views.index') }}">QUIZQUEST</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -19,11 +19,22 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Get started
+                  {% if not current_user.is_authenticated %}
+                    Get started
+                    {% else %}
+                    Menu
+                 {% endif %}
                 </a>
                 <ul class="dropdown-menu">
+                {% if current_user.is_authenticated %}
+                    <li><a class="dropdown-item" href="{{ url_for('views.index') }}">Home</a></li>
+                    <li><a class="dropdown-item" href="#">Record</a></li>
+                    <li><a class="dropdown-item" href="#">Leaderboard</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('views.logout') }}">Sign out</a></li>
+                  {% else %}
                     <li><a class="dropdown-item" href="/login">Sign in</a></li>
                     <li><a class="dropdown-item" href="/signup">Sign Up</a></li>
+                  {% endif %}
                 </ul>
               </li>
             </ul>
