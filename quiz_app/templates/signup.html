@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../static/styles/forms.css">
+        <title>QQ-Registration</title>
+    </head>
+    <body>
+        <header>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </header>
+        <div class="container">
+            <h2>Sign Up</h2>
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                <div>
+                    {{ form.username.label }} <br>
+                    {{ form.username(size=32) }}
+                    {% for error in form.username.error %}
+                    <span>
+                        {{ error }}
+                    </span>
+                    {% endfor %}
+                </div>
+                <div>
+                    {{ form.email.label }}<br> 
+                    {{ form.email(size=32) }}
+                    {% for error in form.email.error %}
+                    <span>
+                        {{ error }}
+                    </span>
+                    {% endfor %}
+                </div>
+                <div>
+                    {{ form.password.label }} <br>
+                    {{ form.password(size=32) }}
+                    {% for error in form.password.error %}
+                    <span>
+                        {{ error }}
+                    </span>
+                    {% endfor %}
+                </div>
+                <div>
+                    {{ form.confirm_password.label }} 
+                    {{ form.confirm_password(size=32) }}
+                    {% for error in form.confirm_password.error %}
+                    <span>
+                        {{ error }}
+                    </span>
+                    {% endfor %}
+                </div>
+                <p>{{ form.submit(class="btn") }}</p>
+            </form>
+        </div>
+        <div class="container2">
+            <p>Already have an account? <a href="/login" style="text-decoration: none;">Signin</a></p>
+        </div>
+    </body>
+</html>

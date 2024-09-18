@@ -1,0 +1,62 @@
+body {
+    padding-top: 10%;
+    color: #1b1b1b;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.container {
+    display: grid;
+    width: 53vh;
+    align-items: center;
+    text-align: center;
+    border: 1px solid #c2c2c2;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 20px;
+}
+.container div {
+    width: 52vh;
+}
+
+#signup {
+    width: 53vh;
+}
+.btn {
+    background-color: #1b1b1b;
+    color: whitesmoke;
+    font-weight: bold;
+    width: 37vh;
+    height: 4vh;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    border: 1px solid #1b1b1b;
+    color: #f2ebdf;
+    transition: 0.5s;
+}
+
+.container2 {
+    margin-top: 5px;
+    text-align: center;
+    width: 58vh;
+    border: 1px solid #c2c2c2;
+}
+
+.flash-message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+.flash-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+.flash-error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
