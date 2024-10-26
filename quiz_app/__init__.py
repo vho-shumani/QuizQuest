@@ -9,5 +9,8 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or \
         '648168738ED817547FC7A2D2CE2C9'
+    
+    from .route import views
+    app.register_blueprint(views, url_prefix="/")
 
     return app
