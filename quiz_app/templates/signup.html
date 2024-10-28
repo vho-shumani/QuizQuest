@@ -8,31 +8,63 @@
     <link rel="stylesheet" href="../static/styles/login.css">
 </head>
   <body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close p-2" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
     <div class="container text-center h-75 mb-3">
         <h1 class="mb-5 mt-3">Registration</h1>
-        
-        <div class="form-floating mb-3 mx-auto w-75">
-            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-            <label for="floatingInput">Username</label>
+        <form method="POST" action="">
+          {{ form.hidden_tag() }}
+          <div class="form-floating mb-3 mx-auto w-75">
+            {{ form.username(class="form-control", id="floatingInput", placeholder="Johndoe")}}
+            <label for="floatingInput">{{ form.username.label }}</label>
+            {% for error in form.username.error %}
+              <span>
+                {{ error }}
+              </span>
+            {% endfor %}
           </div>
           <div class="form-floating mb-3 mx-auto w-75">
-            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-            <label for="floatingInput">Email address</label>
-          </div>
-        <div class="form-floating mb-3 mx-auto w-75">
-            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-            <label for="floatingInput">Password</label>
+            {{ form.email(type="email", class="form-control", id="floatingInput", placeholder="name@example.com")}}
+            <label for="floatingInput">{{ form.email.label }}</label>
+            {% for error in form.email.error %}
+              <span>
+                {{ error }}
+              </span>
+            {% endfor %}
           </div>
           <div class="form-floating mb-4 mx-auto w-75">
-            <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
-            <label for="floatingPassword">Confirm Password</label>
+            {{ form.password(type="password", class="form-control", id="floatingPassword", placeholder="Password")}}
+            <label for="floatingPassword">{{ form.password.label }}</label>
+            {% for error in form.password.error %}
+            <span>
+                {{ error }}
+              </span>
+            {% endfor %}
+          </div>
+          <div class="form-floating mb-4 mx-auto w-75">
+            {{ form.confirm_password(type="password", class="form-control", id="floatingPassword", placeholder="Confirm_password")}}
+            <label for="floatingPassword">{{ form.confirm_password.label }}</label>
+            {% for error in form.confirm_password.error %}
+            <span>
+                {{ error }}
+              </span>
+            {% endfor %}
           </div>
           <div class="mx-auto p-2">
-            <button type="button" class="btn btn-primary px-4">Sign up</button>
-            <p>Have an account? <a style="text-decoration: none;">Signin</a> </p>
+            <div>{{ form.submit(class="btn btn-primary") }}</div>
+            <p>Already have an account? <a style="text-decoration: none;">Login</a> </p>
           </div>
     </div>
 
+        
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   </body>
 </html>
