@@ -1,8 +1,8 @@
 """Module consist of application of route"""
 from flask import Blueprint, render_template, flash, redirect, request, url_for
-from .form import LoginForm, RegistrationForm
-from flask_login import login_user, logout_user, login_required
-from .models import User
+from .form import LoginForm, RegistrationForm, QuestionForm
+from flask_login import login_user, logout_user, login_required, current_user
+from .models import User, Quiz, Question
 from . import bcrypt, db
 
 
@@ -68,3 +68,49 @@ def logout():
     """handles logout of user"""
     logout_user()
     return redirect(url_for('views.login'))
+
+@views.route('/quizes')
+@login_required
+def quizes():
+    """Handles the quiz url"""
+    quizes = Quiz.query.all()
+    return render_template('quizes.html', quizes=quizes)
+
+
+@views.route('/admin', methods=['GET', 'POST'])
+@login_required
+def admin():
+    """handles the administrator page"""
+    form = QuestionForm()
+    if current_user.username == 'admin':
+        if form.validate_on_submit():
+            quiz = Quiz.query.filter_by(title=form.title.data).first()
+            if quiz is None:
+                quiz = Quiz(title=form.title.data, description=form.description.data)
+                db.session.add(quiz)
+                db.session.flush()
+                question = Question(text=form.text.data, 
+                                    option1=form.option1.data, 
+                                    option2=form.option2.data, 
+                                    option3=form.option3.data, 
+                                    correct_answer=form.correct_answer.data, 
+                                    quiz_id=quiz.id)
+                db.session.add(question)
+                db.session.commit()
+                flash(f'Quiz {form.title.data} added', 'success')
+            else:
+                question = Question(text=form.text.data, 
+                                    option1=form.option1.data, 
+                                    option2=form.option2.data, 
+                                    option3=form.option3.data, 
+                                    correct_answer=form.correct_answer.data, 
+                                    quiz_id=quiz.id)
+                db.session.add(question)
+                db.session.commit()
+                flash(f'Questions added to quiz', 'success')
+        elif request.method == 'POST':
+            flash('failed to add quiz', 'danger')
+        return render_template('admin.html', form=form)
+    else:
+        flash('Only administrator can access route.', 'error')
+        return redirect(url_for('views.signup'))

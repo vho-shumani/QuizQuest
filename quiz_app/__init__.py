@@ -23,11 +23,11 @@ def create_app():
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
-
-    login_manager.login_view = 'login'
     
     from .route import views
-    app.register_blueprint(views, url_prefix="/")
+    app.register_blueprint(views)
+
+    login_manager.login_view = 'viewslogin'
 
     with app.app_context():
         db.create_all()
