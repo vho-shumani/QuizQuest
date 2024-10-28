@@ -1,10 +1,14 @@
 """Module contain create_app function which created flask application"""
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
 import os
 
 
 db = SQLAlchemy()
+bcrypt = Bcrypt()
+login_manager = LoginManager()
 
 
 def create_app():
@@ -17,11 +21,21 @@ def create_app():
         'sqlite:///users.db'
     
     db.init_app(app)
+    bcrypt.init_app(app)
+    login_manager.init_app(app)
+
+    login_manager.login_view = 'login'
     
     from .route import views
     app.register_blueprint(views, url_prefix="/")
 
     with app.app_context():
         db.create_all()
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        """ Reload the user object from the user ID stored in the session"""
+        from .models import User
+        return User.query.get(int(user_id))
 
     return app
