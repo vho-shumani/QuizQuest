@@ -1,6 +1,6 @@
 """Module consist of forms for user authentication"""
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField, IntegerField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
 
@@ -31,7 +31,8 @@ class QuestionForm(FlaskForm):
     """handles questions for quizes"""
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('description', validators=[DataRequired()])
-    text = StringField('Question', validators=[DataRequired()])
+    duration = IntegerField('Duration', validators=[DataRequired()])
+    question = StringField('Question', validators=[DataRequired()])
     option1 = StringField('1:', validators=[DataRequired()])
     option2 = StringField('2:', validators=[DataRequired()])
     option3 = StringField('3:', validators=[DataRequired()])

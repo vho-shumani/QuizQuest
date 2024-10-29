@@ -18,7 +18,7 @@ class Quiz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), unique=True, nullable=False)
     description = db.Column(db.String(200), unique=True, nullable=False)
-    Time = db.Column(db.Integer, nullable=False)
+    duration = db.Column(db.Integer, nullable=False)
     questions = db.relationship('Question', backref='quiz', lazy=True)
 
     def __repr__(self):
@@ -27,7 +27,7 @@ class Quiz(db.Model):
 class Question(db.Model):
     """schema for the questions for specific quiz"""
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(200), nullable=False)
+    question = db.Column(db.String(200), nullable=False)
     option1 = db.Column(db.String(120), nullable=False)
     option2 = db.Column(db.String(120), nullable=False)
     option3 = db.Column(db.String(120), nullable=False)

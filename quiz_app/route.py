@@ -86,10 +86,10 @@ def admin():
         if form.validate_on_submit():
             quiz = Quiz.query.filter_by(title=form.title.data).first()
             if quiz is None:
-                quiz = Quiz(title=form.title.data, description=form.description.data)
+                quiz = Quiz(title=form.title.data, description=form.description.data, duration=form.duration.data)
                 db.session.add(quiz)
                 db.session.flush()
-                question = Question(text=form.text.data, 
+                question = Question(question=form.question.data, 
                                     option1=form.option1.data, 
                                     option2=form.option2.data, 
                                     option3=form.option3.data, 
@@ -99,7 +99,7 @@ def admin():
                 db.session.commit()
                 flash(f'Quiz {form.title.data} added', 'success')
             else:
-                question = Question(text=form.text.data, 
+                question = Question(question=form.question.data, 
                                     option1=form.option1.data, 
                                     option2=form.option2.data, 
                                     option3=form.option3.data, 
