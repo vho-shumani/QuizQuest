@@ -1,5 +1,5 @@
 """Module consist of application of route"""
-from flask import Blueprint, render_template, flash, redirect, request, url_for
+from flask import Blueprint, render_template, flash, redirect, request, url_for, session
 from .form import LoginForm, RegistrationForm, QuestionForm
 from flask_login import login_user, logout_user, login_required, current_user
 from .models import User, Quiz, Question
@@ -12,7 +12,7 @@ views = Blueprint('views', __name__)
 @views.route('/')
 def index():
     """Handles the root url('/')"""
-    return render_template('base.html')
+    return render_template('index.html')
 
 
 @views.route('/login', methods=['GET', 'POST'])
@@ -114,3 +114,75 @@ def admin():
     else:
         flash('Only administrator can access route.', 'error')
         return redirect(url_for('views.signup'))
+
+@views.route('/quiz/<int:quiz_id>', methods=['GET', 'POST'])
+@login_required
+def quiz(quiz_id):
+    """Handles the quiz page/url"""
+    page = request.args.get('page', 1, type=int)
+    per_page = 1
+
+    if f'quiz_answers' not in session:
+        session[f'quiz_answers'] = {}
+
+    questions = Question.query.filter_by(quiz_id=quiz_id).paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False
+    )
+    if not questions.items:
+        flash('No questions found for this quiz.', 'warning')
+        return redirect(url_for('views.home'))
+
+    if request.method == 'POST':
+        for question in questions.items:
+            selected_answer = request.form.get(str(question.id))
+            if selected_answer:
+                session[f'quiz_answers'][str(question.id)] = selected_answer
+                session.modified = True
+
+        if page == questions.pages:
+            score = 0
+            num_correct = 0
+            stored_answers = session.get(f'quiz_answers', {})
+            all_questions = Question.query.filter_by(quiz_id=quiz_id).all()
+            for question in all_questions:
+                if str(question.id) in stored_answers:
+                    if question.correct_answer == stored_answers[str(question.id)]:
+                        score += 10
+                        num_correct += 1
+            
+            num_incorrect = len(all_questions) - num_correct
+            session.pop(f'quiz_answers', None)
+
+            flash(f'Your score: {score}', 'success')
+            return redirect(url_for('views.results', 
+                                    quiz_id=quiz_id, 
+                                    score=score,
+                                    num_incorrect=num_incorrect,
+                                    num_correct=num_correct, 
+                                    total_questions=len(all_questions)))
+        else:
+            return redirect(url_for('views.quiz', quiz_id=quiz_id, page=page + 1))
+    return render_template(
+        'quiz.html',
+        questions=questions,
+        stored_answers=session.get(f'quiz_answers', {}),
+    )
+
+@views.route('/results')
+def results():
+    """Handle the results page"""
+    score = request.args.get('score')
+    quiz_id = request.args.get('quiz_id')
+    total_questions = request.args.get('total_question')
+    incorrect = request.args.get('num_incorrect')
+    correct = request.args.get('num_correct')
+    quiz = Quiz.query.filter_by(id=quiz_id).first()
+    return render_template('results.html',
+                            quiz_id=quiz_id,
+                            score=score,
+                            correct=correct,
+                            incorrect=incorrect,
+                            total_questions=total_questions,
+                            quiz_title=quiz.title)

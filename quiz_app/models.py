@@ -35,4 +35,13 @@ class Question(db.Model):
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
 
     def __repr__(self):
-        return f"Question('{self.text}-{self.id}')"
+        return f"Question('{self.question}-{self.id}')"
+
+class results(db.Model):
+    """schema for the results of quiz"""
+    id = db.Column(db.Integer, primary_key=True)
+    score = db.Column(db.Integer, nullable=False)
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+

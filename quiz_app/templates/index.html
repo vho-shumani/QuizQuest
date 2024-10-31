@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><i class="fa-solid fa-puzzle-piece"></i></title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #f3e8ff, #ffffff);
+            min-height: 100vh;
+        }
+
+        .navbar-brand {
+            color: #7c3aed !important;
+            font-weight: bold;
+        }
+
+        .nav-link {
+            color: #4b5563 !important;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #7c3aed !important;
+        }
+
+        .hero-section {
+            padding: 6rem 0;
+        }
+
+        .cta-button {
+            background-color: #7c3aed;
+            border: none;
+            padding: 0.8rem 2rem;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: #6d28d9;
+            transform: scale(1.05);
+        }
+
+        .feature-icon {
+            background-color: #f3e8ff;
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .category-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer {
+            border-top: 1px solid #e5e7eb;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="fa-solid fa-puzzle-piece"></i>
+                QuizQuest
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#categories">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#start">Get Started</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4">Embark on Your Knowledge Adventure</h1>
+                    <p class="lead text-muted mb-5">Challenge yourself with diverse quizzes across multiple categories. Learn, compete, and have fun!</p>
+                    <button class="btn btn-primary btn-lg cta-button">Start Your Quest</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5" id="features">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="feature-icon">
+                                <img src="/api/placeholder/24/24" alt="Brain icon">
+                            </div>
+                            <h3 class="h5 mb-3">Diverse Topics</h3>
+                            <p class="text-muted">Explore quizzes ranging from science to pop culture and everything in between.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="feature-icon">
+                                <img src="/api/placeholder/24/24" alt="Award icon">
+                            </div>
+                            <h3 class="h5 mb-3">Track Progress</h3>
+                            <p class="text-muted">Monitor your achievements and watch your knowledge grow with each quiz.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="feature-icon">
+                                <img src="/api/placeholder/24/24" alt="Users icon">
+                            </div>
+                            <h3 class="h5 mb-3">Compete</h3>
+                            <p class="text-muted">Challenge friends and climb the global leaderboard.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="py-5" id="categories">
+        <div class="container">
+            <h2 class="text-center mb-5">Popular Categories</h2>
+            <div class="row g-4">
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card category-card border-0 shadow-sm">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <span class="fw-medium">Science</span>
+                            <img src="/api/placeholder/16/16" alt="Arrow right">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card category-card border-0 shadow-sm">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <span class="fw-medium">History</span>
+                            <img src="/api/placeholder/16/16" alt="Arrow right">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card category-card border-0 shadow-sm">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <span class="fw-medium">Technology</span>
+                            <img src="/api/placeholder/16/16" alt="Arrow right">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <div class="card category-card border-0 shadow-sm">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <span class="fw-medium">Arts</span>
+                            <img src="/api/placeholder/16/16" alt="Arrow right">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer bg-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <img src="/api/placeholder/24/24" alt="QuizQuest Logo" class="me-2">
+                        <span class="text-purple fw-medium">QuizQuest</span>
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                    <p class="text-muted mb-0">© 2024 QuizQuest. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

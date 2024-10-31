@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block link %}{% endblock %}
+{% block content %}
+<div class="card" style="width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title">Quiz Results</h5>
+      <h6 class="card-subtitle mb-2 text-body-secondary">{{ quiz_title }}</h6>
+      <p class="card-text">
+        Correct answers: {{ correct }}<br>
+        Incorrect answers: {{ incorrect }}<br>
+        Score: {{ score }}
+      </p>
+      <a href="{{ url_for('views.quiz', quiz_id=quiz_id) }}" class="card-link">Try again</a>
+      <a href="{{ url_for('views.quizes') }}" class="card-link">View other quizes</a>
+    </div>
+</div>
+{% endblock %}
