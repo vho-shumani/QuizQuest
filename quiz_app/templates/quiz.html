@@ -1,7 +1,38 @@
 {% extends "base.html" %}
-{% block link %}{% endblock %}
+{% block link %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let remainingTime = {{ remaining_time }};
+        const timerDisplay = document.getElementById('quiz-timer');
+        
+        function updateTimer() {
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            
+            timerDisplay.textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (remainingTime <= 0) {
+                document.querySelector('form').submit();
+                return;
+            }
+            
+            remainingTime--;
+            setTimeout(updateTimer, 1000);
+        }
+        
+        updateTimer();
+    });
+    </script>
+{% endblock %}
 {% block content %}
 <div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col text-center">
+            <h3>Time Remaining: <span id="quiz-timer" class="text-danger"></span></h3>
+        </div>
+    </div>
+    
     <form method="POST" action="">
         {% for question in questions.items %}
         <div class="card mb-4 shadow-sm">

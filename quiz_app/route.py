@@ -2,8 +2,9 @@
 from flask import Blueprint, render_template, flash, redirect, request, url_for, session
 from .form import LoginForm, RegistrationForm, QuestionForm
 from flask_login import login_user, logout_user, login_required, current_user
-from .models import User, Quiz, Question
+from .models import User, Quiz, Question, Category
 from . import bcrypt, db
+import time
 
 
 views = Blueprint('views', __name__)
@@ -69,11 +70,22 @@ def logout():
     logout_user()
     return redirect(url_for('views.login'))
 
+@views.route('/categories')
+@login_required
+def categories():
+    """Handles categories page"""
+
+
 @views.route('/quizes')
 @login_required
 def quizes():
     """Handles the quiz url"""
-    quizes = Quiz.query.all()
+    page = request.args.get('page', 1, type=int)
+    per_page = 9
+    quizes = Quiz.query.paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False)
     return render_template('quizes.html', quizes=quizes)
 
 
@@ -121,18 +133,56 @@ def quiz(quiz_id):
     """Handles the quiz page/url"""
     page = request.args.get('page', 1, type=int)
     per_page = 1
+    TOTAL_QUIZ_TIME = 300
+    questions = Question.query.filter_by(quiz_id=quiz_id).paginate(
+        page=page,
+        per_page=per_page,
+    )
 
     if f'quiz_answers' not in session:
         session[f'quiz_answers'] = {}
 
-    questions = Question.query.filter_by(quiz_id=quiz_id).paginate(
-        page=page,
-        per_page=per_page,
-        error_out=False
-    )
+
     if not questions.items:
         flash('No questions found for this quiz.', 'warning')
         return redirect(url_for('views.home'))
+
+    if page == 1:
+        session[f'quiz_start_time'] = time.time()
+        session[f'quiz_time_limit'] = TOTAL_QUIZ_TIME
+
+    start_time = session.get(f'quiz_start_time')
+    time_limit = session.get(f'quiz_time_limit')
+    
+    if start_time:
+        elapsed_time = time.time() - start_time
+        remaining_time = max(0, time_limit - elapsed_time)
+    else:
+        remaining_time = time_limit
+
+    if remaining_time <= 0:
+        score = 0
+        num_correct = 0
+        stored_answers = session.get(f'quiz_answers', {})
+        all_questions = Question.query.filter_by(quiz_id=quiz_id).all()
+        for question in all_questions:
+            if str(question.id) in stored_answers:
+                if question.correct_answer == stored_answers[str(question.id)]:
+                    score += 10
+                    num_correct += 1
+        
+        num_incorrect = len(all_questions) - num_correct
+        session.pop(f'quiz_answers', None)
+        session.pop(f'quiz_start_time', None)
+        session.pop(f'quiz_time_limit', None)
+
+        flash('Time is up! Quiz submitted automatically.', 'warning')
+        return redirect(url_for('views.results', 
+                                quiz_id=quiz_id, 
+                                score=score,
+                                num_incorrect=num_incorrect,
+                                num_correct=num_correct, 
+                                total_questions=len(all_questions)))
 
     if request.method == 'POST':
         for question in questions.items:
@@ -168,12 +218,14 @@ def quiz(quiz_id):
         'quiz.html',
         questions=questions,
         stored_answers=session.get(f'quiz_answers', {}),
+        remaining_time=int(remaining_time)
     )
 
 @views.route('/results')
 def results():
     """Handle the results page"""
     score = request.args.get('score')
+    remaining_time = request.args.get('remaining_time')
     quiz_id = request.args.get('quiz_id')
     total_questions = request.args.get('total_question')
     incorrect = request.args.get('num_incorrect')

@@ -1,14 +1,30 @@
 body {
     padding-top: 5%;
-    background-color: white;
+    background-color: #f3e8ff;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 .container {
+    background-color: whitesmoke;
     width: 89vh;
     height: 59vh;
     border: 1px solid rgb(201, 199, 199);
-    border-radius: 5px;
+    border-radius: 6px;
+}
+
+.cta-button {
+    text-decoration: none;
+    color: #f3e8ff;
+    background-color: #7c3aed;
+    border: none;
+    border-radius: 3px;
+    padding: 0.8rem 2rem;
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #6d28d9;
+    transform: scale(1.05);
 }

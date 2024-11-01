@@ -6,16 +6,48 @@
         {% for quiz in quizes %}
         <div class="col-lg-4">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">{{ quiz.title }}</h5>
+                <div class="card-body ">
+                    <h3 class="card-title text-uppercase">{{ quiz.title }}</h3>
                     <h6 class="card-subtitle mb-2 text-body-secondary">Duration: {{ quiz.duration }}</h6>
-                    <p>{{ quiz.description }}</p>
-                    <a href="#" class="card-link">Take Quiz</a>
-                    <a href="#" class="card-link">leaderboard</a>
+                    <p class="mb-3">{{ quiz.description }}</p>
+                    <a href="{{ url_for('views.quiz', quiz_id=quiz.id) }}" class="cta-button">Take Quiz</a>
+                    <a href="#" class="btn" style="color: #7c3aed;">Leaderboard</a>
                 </div>
             </div>
         </div>
         {% endfor %}
+        <nav aria-label="Question navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not quizes.has_prev %}disabled{% endif %}">
+                    <a class="page-link" 
+                       href="{{ url_for('views.quizes', page=quizes.prev_num) }}"
+                       aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                
+                {% for page_num in quizes.iter_pages() %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == quizes.page %}active{% endif %}">
+                            <a class="page-link" 
+                               href="{{ url_for('views.quizes', page=page_num) }}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                
+                <li class="page-item {% if not quizes.has_next %}disabled{% endif %}">
+                    <a class="page-link" 
+                       href="{{ url_for('views.quizes', page=quizes.next_num) }}"
+                       aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 {% endblock %}

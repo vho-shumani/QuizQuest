@@ -43,5 +43,3 @@ class results(db.Model):
     score = db.Column(db.Integer, nullable=False)
     quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
-

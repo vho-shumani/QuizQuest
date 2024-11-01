@@ -28,8 +28,11 @@ body {
 }
 
 .cta-button {
+    text-decoration: none;
+    color: #f3e8ff;
     background-color: #7c3aed;
     border: none;
+    border-radius: 3px;
     padding: 0.8rem 2rem;
     transition: transform 0.3s, background-color 0.3s;
 }

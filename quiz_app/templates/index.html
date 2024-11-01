@@ -8,13 +8,13 @@
                     <h1 class="display-4 fw-bold mb-4">Embark on Your Knowledge Adventure</h1>
                     <p class="lead text-muted mb-5">Challenge yourself with diverse quizzes across multiple categories. Learn, compete, and have fun!</p>
                     {% if current_user.is_authenticated %}
-                        <a class="btn btn-primary btn-lg cta-button" href="{{ url_for('views.quizes') }}"> 
-                            Start quiz
+                        <a class="cta-button" href="{{ url_for('views.quizes') }}" role="button"> 
+                            Explore Quizes
                         </a>
                     {% else %}
-                        <button class="btn btn-primary btn-lg cta-button"> 
+                        <a class="cta-button" href="{{ url_for('views.login')}}" role="button">
                             Start Quest
-                        </button>
+                        </a>
                     {% endif %}
                 </div>
             </div>
