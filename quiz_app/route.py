@@ -1,8 +1,8 @@
 """Module consist of application of route"""
 from flask import Blueprint, render_template, flash, redirect, request, url_for, session
-from .form import LoginForm, RegistrationForm, QuestionForm
-from flask_login import login_user, logout_user, login_required, current_user
-from .models import User, Quiz, Question, Category
+from .form import LoginForm, RegistrationForm
+from flask_login import login_user, logout_user, login_required
+from .models import User, Quiz, Question
 from . import bcrypt, db
 import time
 
@@ -44,8 +44,16 @@ def signup():
         email = User.query.filter_by(email=form.email.data).first()
         if user is None and email is None:
             hashed_pass = bcrypt.generate_password_hash(form.password.data)
-            user = User(username=form.username.data, email=form.email.data,
-                        password=hashed_pass)
+            if form.username.data == 'admin':
+                user = User(username=form.username.data,
+                            email=form.email.data,
+                            password=hashed_pass,
+                            is_admin=True)
+            else:
+                user = User(username=form.username.data,
+                            email=form.email.data,
+                            password=hashed_pass,
+                            is_admin=False)
             db.session.add(user)
             db.session.commit()
             flash(f'''Account successfully created 
@@ -81,51 +89,12 @@ def categories():
 def quizes():
     """Handles the quiz url"""
     page = request.args.get('page', 1, type=int)
-    per_page = 9
+    per_page = 6
     quizes = Quiz.query.paginate(
         page=page,
         per_page=per_page,
         error_out=False)
     return render_template('quizes.html', quizes=quizes)
-
-
-@views.route('/admin', methods=['GET', 'POST'])
-@login_required
-def admin():
-    """handles the administrator page"""
-    form = QuestionForm()
-    if current_user.username == 'admin':
-        if form.validate_on_submit():
-            quiz = Quiz.query.filter_by(title=form.title.data).first()
-            if quiz is None:
-                quiz = Quiz(title=form.title.data, description=form.description.data, duration=form.duration.data)
-                db.session.add(quiz)
-                db.session.flush()
-                question = Question(question=form.question.data, 
-                                    option1=form.option1.data, 
-                                    option2=form.option2.data, 
-                                    option3=form.option3.data, 
-                                    correct_answer=form.correct_answer.data, 
-                                    quiz_id=quiz.id)
-                db.session.add(question)
-                db.session.commit()
-                flash(f'Quiz {form.title.data} added', 'success')
-            else:
-                question = Question(question=form.question.data, 
-                                    option1=form.option1.data, 
-                                    option2=form.option2.data, 
-                                    option3=form.option3.data, 
-                                    correct_answer=form.correct_answer.data, 
-                                    quiz_id=quiz.id)
-                db.session.add(question)
-                db.session.commit()
-                flash(f'Questions added to quiz', 'success')
-        elif request.method == 'POST':
-            flash('failed to add quiz', 'danger')
-        return render_template('admin.html', form=form)
-    else:
-        flash('Only administrator can access route.', 'error')
-        return redirect(url_for('views.signup'))
 
 @views.route('/quiz/<int:quiz_id>', methods=['GET', 'POST'])
 @login_required
@@ -133,7 +102,8 @@ def quiz(quiz_id):
     """Handles the quiz page/url"""
     page = request.args.get('page', 1, type=int)
     per_page = 1
-    TOTAL_QUIZ_TIME = 300
+    quiz = Quiz.query.filter_by(id=quiz_id).first()
+    TOTAL_QUIZ_TIME = quiz.duration * 60 
     questions = Question.query.filter_by(quiz_id=quiz_id).paginate(
         page=page,
         per_page=per_page,
