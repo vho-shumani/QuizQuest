@@ -3,12 +3,14 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+from flask_admin import Admin
 import os
 
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
+admin = Admin(name="QUIZQUEST", template_mode="bootstrap4")
 
 
 def create_app():
@@ -23,14 +25,18 @@ def create_app():
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+    from .models import SecureAdminView
+    admin.init_app(app, index_view=SecureAdminView())
     
     from .route import views
     app.register_blueprint(views)
 
-    login_manager.login_view = 'viewslogin'
+    login_manager.login_view = 'views.login'
 
+    from .models import setup_admin, User, Quiz, Question
     with app.app_context():
         db.create_all()
+        setup_admin()
 
     @login_manager.user_loader
     def load_user(user_id):
