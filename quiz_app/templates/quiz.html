@@ -25,14 +25,15 @@
     });
     </script>
 {% endblock %}
+{% block title %} Quiz {% endblock %}
 {% block content %}
-<div class="container mt-4">
+<div class="container mt-4 ">
     <div class="row mb-3">
         <div class="col text-center">
             <h3>Time Remaining: <span id="quiz-timer" class="text-danger"></span></h3>
         </div>
     </div>
-    
+
     <form method="POST" action="">
         {% for question in questions.items %}
         <div class="card mb-4 shadow-sm">
