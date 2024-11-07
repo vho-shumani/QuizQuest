@@ -1,0 +1,5 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+    <a class="btn btn-primary" href="{{ url_for('views.index') }}"> Home</a>
+    <a class="btn btn-primary" href="{{ url_for('views.logout') }}"> Logout</a>
+{% endblock %}

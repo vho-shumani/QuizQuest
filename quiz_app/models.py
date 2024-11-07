@@ -69,6 +69,13 @@ class QuizAdminView(SecureModelView):
     can_edit = True
     can_view_details = True
 
+class UserAdminView(SecureModelView):
+    """Customization view for user model"""
+    column_list = ['username', 'email']
+    can_create = False
+    can_edit = False
+    can_view_details = True
+
 class QuestionAdminView(SecureModelView):
     """Customization view for question model"""
     column_list = ['question', 'quiz']
@@ -78,5 +85,6 @@ class QuestionAdminView(SecureModelView):
 
 def setup_admin():
     """Setup admin views"""
+    admin.add_view(UserAdminView(User, db.session))
     admin.add_view(QuizAdminView(Quiz, db.session))
     admin.add_view(QuestionAdminView(Question, db.session))

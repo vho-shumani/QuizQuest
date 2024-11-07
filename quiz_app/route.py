@@ -78,12 +78,6 @@ def logout():
     logout_user()
     return redirect(url_for('views.login'))
 
-@views.route('/categories')
-@login_required
-def categories():
-    """Handles categories page"""
-
-
 @views.route('/quizes')
 @login_required
 def quizes():

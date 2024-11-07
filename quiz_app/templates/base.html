@@ -33,13 +33,13 @@
                           <i class="fa fa-sign-out" aria-hidden="true"></i>  Signout
                       </a>
                   </li>
-                  
+                  {% if current_user.is_admin %}
                   <li class="nav-item">
-                      <a class="nav-link" href="#profile">
-                          <i class="fa-regular fa-user"></i>
+                      <a class="nav-link" href="{{ url_for('admin.index') }}">
+                          Admin
                       </a>
                   </li>
-
+                  {% endif %}
                   {% else %}
                   <li class="nav-item">
                       <a class="nav-link" href="{{ url_for('views.signup') }}">Get Started</a>
