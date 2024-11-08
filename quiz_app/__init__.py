@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_admin import Admin
+from flask_restful import Api
 import os
 
 
@@ -11,6 +12,7 @@ db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 admin = Admin(name="QUIZQUEST", template_mode="bootstrap4")
+api = Api()
 
 
 def create_app():
@@ -25,6 +27,9 @@ def create_app():
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+    from .api import api
+    api.init_app(app)
+
     from .models import SecureAdminView
     admin.init_app(app, index_view=SecureAdminView())
     

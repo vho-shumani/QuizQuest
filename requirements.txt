@@ -1,3 +1,4 @@
+aniso8601==9.0.1
 arandr==0.1.10
 bcrypt==4.2.0
 blinker==1.8.2
@@ -17,6 +18,7 @@ Flask==3.0.3
 Flask-Admin==1.6.1
 Flask-Bcrypt==1.0.1
 Flask-Login==0.6.3
+Flask-RESTful==0.3.10
 Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.2
 greenlet==3.1.1
@@ -42,6 +44,7 @@ PyJWT==2.3.0
 pyparsing==2.4.7
 python-apt==2.4.0+ubuntu4
 python-magic==0.4.24
+pytz==2024.2
 PyYAML==5.4.1
 requests==2.25.1
 SecretStorage==3.3.1
