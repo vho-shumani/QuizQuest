@@ -12,21 +12,21 @@ question_fields = {
     'correct_answer': fields.String  
 }
 
-class AllQuizesResource(Resource):
+class AllQuizzesResource(Resource):
     quizfields = {
         'id': fields.Integer,
         'title': fields.String,
         'description': fields.String,
         'duration': fields.Integer,
     }
-    
+
     @marshal_with(quizfields)
     def get(self):
         """Retrieves list of all quizzes"""
         quizzes = Quiz.query.all()
         return quizzes
 
-class QuizeResource(Resource):
+class QuizResource(Resource):
     quizfields = {
         'id': fields.Integer,
         'title': fields.String,
@@ -43,5 +43,5 @@ class QuizeResource(Resource):
             return {'message': 'Quiz not found'}, 404
         return quiz
 
-api.add_resource(AllQuizesResource, '/api/quizzes')
-api.add_resource(QuizeResource, '/api/quizzes/<int:quiz_id>')
+api.add_resource(AllQuizzesResource, '/api/quizzes')
+api.add_resource(QuizResource, '/api/quizzes/<int:quiz_id>')
