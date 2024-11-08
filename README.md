@@ -76,3 +76,6 @@ flask run
 ## API endpoints
 - `GET /api/quizzes` : Retrieve list of all quizzes
 - `GET /api/quizzes/<quiz_id>` : Retrieve specific quiz details including questions
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
