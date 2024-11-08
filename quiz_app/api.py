@@ -12,15 +12,14 @@ question_fields = {
     'correct_answer': fields.String  
 }
 
-quizfields = {
-    'id': fields.Integer,
-    'title': fields.String,
-    'description': fields.String,
-    'duration': fields.Integer,
-    'questions': fields.List(fields.Nested(question_fields)) 
-}
-
 class AllQuizesResource(Resource):
+    quizfields = {
+        'id': fields.Integer,
+        'title': fields.String,
+        'description': fields.String,
+        'duration': fields.Integer,
+    }
+    
     @marshal_with(quizfields)
     def get(self):
         """Retrieves list of all quizzes"""
@@ -28,6 +27,14 @@ class AllQuizesResource(Resource):
         return quizzes
 
 class QuizeResource(Resource):
+    quizfields = {
+        'id': fields.Integer,
+        'title': fields.String,
+        'description': fields.String,
+        'duration': fields.Integer,
+        'questions': fields.List(fields.Nested(question_fields)) 
+    }
+
     @marshal_with(quizfields)
     def get(self, quiz_id):
         """Retrieves quiz with specidied id"""
