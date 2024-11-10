@@ -5,6 +5,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_admin import Admin
 from flask_restful import Api
+from flask_migrate import Migrate
 import os
 
 
@@ -13,6 +14,7 @@ bcrypt = Bcrypt()
 login_manager = LoginManager()
 admin = Admin(name="QUIZQUEST", template_mode="bootstrap4")
 api = Api()
+migrate = Migrate()
 
 
 def create_app():
@@ -32,7 +34,8 @@ def create_app():
 
     from .models import SecureAdminView
     admin.init_app(app, index_view=SecureAdminView())
-    
+    migrate.init_app(app, db)
+
     from .route import views
     app.register_blueprint(views)
 

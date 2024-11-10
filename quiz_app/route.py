@@ -1,8 +1,8 @@
 """Module consist of application of route"""
 from flask import Blueprint, render_template, flash, redirect, request, url_for, session
 from .form import LoginForm, RegistrationForm
-from flask_login import login_user, logout_user, login_required
-from .models import User, Quiz, Question
+from flask_login import login_user, logout_user, login_required, current_user
+from .models import User, Quiz, Question, QuizResult
 from . import bcrypt, db
 import time
 
@@ -185,16 +185,26 @@ def quiz(quiz_id):
         remaining_time=int(remaining_time)
     )
 
-@views.route('/results')
+@views.route('/results', methods=['GET', 'POST'])
 def results():
     """Handle the results page"""
     score = request.args.get('score')
-    remaining_time = request.args.get('remaining_time')
     quiz_id = request.args.get('quiz_id')
     total_questions = request.args.get('total_question')
     incorrect = request.args.get('num_incorrect')
     correct = request.args.get('num_correct')
     quiz = Quiz.query.filter_by(id=quiz_id).first()
+
+    if request.method == 'POST':
+        quiz_result = QuizResult(score=score,
+                                 total_questions=total_questions,
+                                 incorrect=incorrect,
+                                 correct=correct,
+                                 quiz_id=quiz_id,
+                                 user_id=current_user.id)
+        db.session.add(quiz_result)
+        db.session.commit()
+        return redirect(url_for('views.index'))
     return render_template('results.html',
                             quiz_id=quiz_id,
                             score=score,

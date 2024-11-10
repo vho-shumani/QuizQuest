@@ -12,9 +12,10 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
+    quiz_results = db.relationship("QuizResult", back_populates="user")
 
     def __repr__(self):
-        return f"User('{self.username}-{self.id}')"
+        return f"User: {self.username}"
 
 class Quiz(db.Model):
     """The schema for the quizes"""
@@ -23,9 +24,10 @@ class Quiz(db.Model):
     description = db.Column(db.String(200), nullable=False)
     duration = db.Column(db.Integer, nullable=False)
     questions = db.relationship("Question", back_populates="quiz")
+    quiz_results = db.relationship("QuizResult", back_populates="quiz")
 
     def __repr__(self):
-        return f"Quiz('{self.title}-id-{self.id}')"
+        return f"Quiz: {self.title}"
 
 class Question(db.Model):
     """schema for the questions for specific quiz"""
@@ -35,11 +37,26 @@ class Question(db.Model):
     option2 = db.Column(db.String(120), nullable=False)
     option3 = db.Column(db.String(120), nullable=False)
     correct_answer = db.Column(db.String(100), nullable=False)
-    quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=True)
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
     quiz = db.relationship("Quiz", back_populates="questions")
 
     def __repr__(self):
-        return f"Question('{self.question}-{self.id}')"
+        return f"Question:'{self.question}' quiz: {self.quiz}')"
+    
+class QuizResult(db.Model):
+    """schema for the result for specific quiz"""
+    id = db.Column(db.Integer, primary_key=True)
+    score = db.Column(db.Integer, nullable=False)
+    total_questions = db.Column(db.Integer)
+    incorrect = db.Column(db.Integer)
+    correct = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
+    user = db.relationship("User", back_populates="quiz_results")
+    quiz = db.relationship("Quiz", back_populates="quiz_results")
+
+    def __repr__(self):
+        return f"('{self.user}-{self.quiz}')"
     
 class SecureModelView(ModelView):
     def is_accessible(self):
@@ -76,6 +93,13 @@ class UserAdminView(SecureModelView):
     can_edit = False
     can_view_details = True
 
+class ResultAdminView(SecureModelView):
+    """Customization view for results model"""
+    column_list = ['score', 'user', 'quiz']
+    can_create = False
+    can_edit = False
+    can_view_details = True
+
 class QuestionAdminView(SecureModelView):
     """Customization view for question model"""
     column_list = ['question', 'quiz']
@@ -88,3 +112,4 @@ def setup_admin():
     admin.add_view(UserAdminView(User, db.session))
     admin.add_view(QuizAdminView(Quiz, db.session))
     admin.add_view(QuestionAdminView(Question, db.session))
+    admin.add_view(ResultAdminView(QuizResult, db.session))

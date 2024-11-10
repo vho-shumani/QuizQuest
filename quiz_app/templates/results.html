@@ -13,10 +13,14 @@
           Incorrect answers: {{ incorrect }}<br>
           Score: {{ score }}
         </p>
-        <button class="cta-button"> 
+        <button class="cta-button" hre> 
           Start Quest
       </button>
-        <a href="{{ url_for('views.quizes') }}" class="btn">View other quizes</a>
+      <form method="POST" action="{{ url_for('views.results', score=score, quiz_id=quiz_id, total_questions=total_questions, num_incorrect=incorrect, num_correct=correct) }}">
+        <button type="submit" class="btn">
+          Save results
+        </button>
+      </form>
       </div>
     </div>
 </div>
