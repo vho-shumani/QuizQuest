@@ -1,5 +1,9 @@
-{% extends 'admin/master.html' %}
-{% block body %}
-    <a class="btn btn-primary" href="{{ url_for('views.index') }}"> Home</a>
-    <a class="btn btn-primary" href="{{ url_for('views.logout') }}"> Logout</a>
+{% extends 'admin/base.html' %}
+{% block access_control %}
+{% if current_user.is_authenticated %}
+<div class="navbar-text btn btn-link">
+    Welcome, {{ current_user.username }} |
+    <a href="{{ url_for('views.logout') }}" class="text-white">Log out</a>
+</div>
+{% endif %}
 {% endblock %}
