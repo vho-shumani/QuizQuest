@@ -1,6 +1,6 @@
 """Module consist of application of route"""
 from flask import Blueprint, render_template, flash, redirect, request, url_for, session
-from .form import LoginForm, RegistrationForm
+from .form import LoginForm, RegistrationForm, EditProfileForm
 from flask_login import login_user, logout_user, login_required, current_user
 from .models import User, Quiz, Question, QuizResult
 from . import bcrypt, db
@@ -212,3 +212,67 @@ def results():
                             incorrect=incorrect,
                             total_questions=total_questions,
                             quiz_title=quiz.title)
+
+@views.route('/profile')
+@login_required
+def profile():
+    """Handle user profile page"""
+    user_results = (QuizResult.query
+                   .filter_by(user_id=current_user.id)
+                   .order_by(QuizResult.id.desc())
+                   .all())
+
+    total_quizzes = len(user_results)
+    if total_quizzes > 0:
+        average_score = sum(result.score for result in user_results) / total_quizzes
+        best_score = max(result.score for result in user_results)
+        total_correct = sum(result.correct for result in user_results)
+        total_questions = sum(result.total_questions for result in user_results if result.total_questions)
+        accuracy = (total_correct / total_questions * 100) if total_questions > 0 else 0
+    else:
+        average_score = best_score = accuracy = 0
+    
+    recent_results = user_results[:5] 
+    
+    taken_quiz_ids = [result.quiz_id for result in user_results]
+    available_quizzes = Quiz.query.filter(~Quiz.id.in_(taken_quiz_ids)).all() if taken_quiz_ids else Quiz.query.all()
+    
+    return render_template('profile.html',
+                         user=current_user,
+                         results=user_results,
+                         recent_results=recent_results,
+                         available_quizzes=available_quizzes,
+                         stats={
+                             'total_quizzes': total_quizzes,
+                             'average_score': round(average_score, 1),
+                             'best_score': best_score,
+                             'accuracy': round(accuracy, 1)
+                         })
+
+@views.route('/profile/edit', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    """Handle profile editing"""
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        if form.email.data != current_user.email:
+            if User.query.filter_by(email=form.email.data).first():
+                flash('Email already exists.', 'danger')
+                return redirect(url_for('views.edit_profile'))
+            
+        current_user.email = form.email.data
+        if form.new_password.data:
+            if bcrypt.check_password_hash(current_user.password, form.current_password.data):
+                current_user.password = bcrypt.generate_password_hash(form.new_password.data)
+            else:
+                flash('Current password is incorrect.', 'danger')
+                return redirect(url_for('views.edit_profile'))
+        
+        db.session.commit()
+        flash('Your profile has been updated.', 'success')
+        return redirect(url_for('views.profile'))
+    
+    elif request.method == 'GET':
+        form.email.data = current_user.email
+        
+    return render_template('edit_profile.html', form=form)
