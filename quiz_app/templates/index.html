@@ -8,7 +8,7 @@
                     <h1 class="display-4 fw-bold mb-4">Embark on Your Knowledge Adventure</h1>
                     <p class="lead text-muted mb-5">Challenge yourself with diverse quizzes across multiple categories. Learn, compete, and have fun!</p>
                     {% if current_user.is_authenticated %}
-                        <a class="cta-button" href="{{ url_for('views.quizes') }}" role="button"> 
+                        <a class="cta-button" href="{{ url_for('views.categories') }}" role="button"> 
                             Explore Quizes
                         </a>
                     {% else %}
@@ -98,6 +98,36 @@
             </div>
         </div>
     </section>
+
+    <section class="py-5" id="recent-quizzes">
+        <div class="container">
+            <h2 class="text-center mb-5">Recently Added Quizzes</h2>
+            <div class="row">
+                {% for quiz in quizzes %}
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ quiz.title }}</h5>
+                            <p class="card-text">{{ quiz.description }}</p>
+                            <a href="{{ url_for('views.quiz', quiz_id=quiz.id) }}" class="btn btn-primary">Take Quiz</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 QuizQuest. All rights reserved.</p>
+            <p>Follow us on:
+                <a href="#" class="text-white"><i class="fa fa-facebook"></i></a>
+                <a href="#" class="text-white"><i class="fa fa-twitter"></i></a>
+                <a href="#" class="text-white"><i class="fa fa-instagram"></i></a>
+            </p>
+        </div>
+    </footer>
     {% endblock %}
 </body>
 </html>

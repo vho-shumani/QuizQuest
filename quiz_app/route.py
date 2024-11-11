@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, flash, redirect, request, url_for, session
 from .form import LoginForm, RegistrationForm, EditProfileForm
 from flask_login import login_user, logout_user, login_required, current_user
-from .models import User, Quiz, Question, QuizResult
+from .models import User, Quiz, Question, QuizResult, Category
 from . import bcrypt, db
 import time
 
@@ -13,7 +13,9 @@ views = Blueprint('views', __name__)
 @views.route('/')
 def index():
     """Handles the root url('/')"""
-    return render_template('index.html')
+    quizzes = Quiz.query.all()
+    recent_quizzes = quizzes[:5]
+    return render_template('index.html', quizzes=recent_quizzes)
 
 
 @views.route('/login', methods=['GET', 'POST'])
@@ -78,17 +80,29 @@ def logout():
     logout_user()
     return redirect(url_for('views.login'))
 
-@views.route('/quizes')
+@views.route('/categories')
 @login_required
-def quizes():
-    """Handles the quiz url"""
+def categories():
+    """Handles the category url"""
     page = request.args.get('page', 1, type=int)
     per_page = 6
-    quizes = Quiz.query.paginate(
+    categories = Category.query.paginate(
         page=page,
         per_page=per_page,
         error_out=False)
-    return render_template('quizes.html', quizes=quizes)
+    return render_template('categories.html', categories=categories)
+
+@views.route('/quizzes/<int:category_id>')
+@login_required
+def quizzes(category_id):
+    """Handles the quiz url"""
+    page = request.args.get('page', 1, type=int)
+    per_page = 6
+    quizes = Quiz.query.filter_by(category_id=category_id).paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False)
+    return render_template('quizes.html', category_id=category_id, quizes=quizes)
 
 @views.route('/quiz/<int:quiz_id>', methods=['GET', 'POST'])
 @login_required

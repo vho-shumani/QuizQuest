@@ -17,12 +17,24 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User: {self.username}"
 
+class Category(db.Model):
+    """Schema for quiz catergories"""
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    quizzes = db.relationship("Quiz", back_populates="category")
+
+    def __repr__(self):
+        return f"Category: {self.title}"
+
 class Quiz(db.Model):
     """The schema for the quizes"""
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(200), nullable=False)
     duration = db.Column(db.Integer, nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
+    category = db.relationship("Category", back_populates="quizzes")
     questions = db.relationship("Question", back_populates="quiz")
     quiz_results = db.relationship("QuizResult", back_populates="quiz")
 
@@ -77,11 +89,19 @@ class SecureAdminView(AdminIndexView):
         flash('Please log in with admin credentials to access this page.', 'warning')
         return redirect(url_for('views.login', next=url_for('admin.index')))
 
+class CatergoryAdminView(SecureModelView):
+    """Customization view for category model"""
+    column_list = ['id','title']
+    form_columns = ['title', 'description']
+    create_modal = True
+    edit_modal = True
+    can_edit = True
+    can_view_details = True
+
 class QuizAdminView(SecureModelView):
     """Customization view for quiz model"""
-    column_list = ['id','title', 'description', 'duration']
-    form_columns = ['title', 'description', 'duration']
-    create_modal = True
+    column_list = ['id','title', 'description', 'duration', 'category']
+    form_columns = ['title', 'description', 'duration', 'category_id']
     edit_modal = True
     can_edit = True
     can_view_details = True
@@ -110,6 +130,7 @@ class QuestionAdminView(SecureModelView):
 def setup_admin():
     """Setup admin views"""
     admin.add_view(UserAdminView(User, db.session))
+    admin.add_view(CatergoryAdminView(Category, db.session))
     admin.add_view(QuizAdminView(Quiz, db.session))
     admin.add_view(QuestionAdminView(Question, db.session))
     admin.add_view(ResultAdminView(QuizResult, db.session))

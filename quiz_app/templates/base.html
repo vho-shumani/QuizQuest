@@ -24,7 +24,7 @@
               <ul class="navbar-nav ms-auto">
                   {% if current_user.is_authenticated %}
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('views.quizes') }}">
+                    <a class="nav-link" href="{{ url_for('views.categories') }}">
                         <i class="fa-solid fa-list"></i> Categories</a>
                     </li>
 
@@ -33,13 +33,19 @@
                           <i class="fa fa-sign-out" aria-hidden="true"></i>  Signout
                       </a>
                   </li>
-                  {% if current_user.is_admin %}
-                  <li class="nav-item">
-                      <a class="nav-link" href="{{ url_for('admin.index') }}">
-                          Admin
-                      </a>
-                  </li>
-                  {% endif %}
+                        {% if current_user.is_admin %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin.index') }}">
+                                Admin
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('views.profile') }}">
+                                <i class="fa-regular fa-user"></i>
+                            </a>
+                        </li>
+                        {% endif %}
                   {% else %}
                   <li class="nav-item">
                       <a class="nav-link" href="{{ url_for('views.signup') }}">Get Started</a>

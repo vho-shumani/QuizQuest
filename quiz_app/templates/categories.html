@@ -1,36 +1,34 @@
 {% extends "base.html" %}
-{% block title %} quizzes {% endblock %}
+{% block title %} categories {% endblock %}
 {% block content %}
 <div class="container pt-5">
     <div class="row row-gap-3">
-        {% for quiz in quizes %}
+        {% for category in categories %}
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-body ">
-                    <h3 class="card-title text-uppercase">{{ quiz.title }}</h3>
-                    <h6 class="card-subtitle mb-2 text-body-secondary">Duration: {{ quiz.duration }}</h6>
-                    <p class="mb-3">{{ quiz.description }}</p>
-                    <a href="{{ url_for('views.quiz', quiz_id=quiz.id) }}" class="cta-button">Take Quiz</a>
-                    <a href="#" class="btn" style="color: #7c3aed;">Leaderboard</a>
+                    <h3 class="card-title text-uppercase">{{ category.title }}</h3>
+                    <p class="mb-3">{{ category.description }}</p>
+                    <a href="{{ url_for('views.quizzes', category_id=category.id) }}" class="cta-button">View</a>
                 </div>
             </div>
         </div>
         {% endfor %}
         <nav aria-label="Question navigation">
             <ul class="pagination justify-content-center">
-                <li class="page-item {% if not quizes.has_prev %}disabled{% endif %}">
+                <li class="page-item {% if not categories.has_prev %}disabled{% endif %}">
                     <a class="page-link" 
-                       href="{{ url_for('views.quizzes', category_id=category_id, page=quizes.prev_num) }}"
+                       href="{{ url_for('views.categories', page=categories.prev_num) }}"
                        aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
-                    </a> 
+                    </a>
                 </li>
                 
-                {% for page_num in quizes.iter_pages() %}
+                {% for page_num in categories.iter_pages() %}
                     {% if page_num %}
-                        <li class="page-item {% if page_num == quizes.page %}active{% endif %}">
+                        <li class="page-item {% if page_num == categories.page %}active{% endif %}">
                             <a class="page-link" 
-                               href="{{ url_for('views.quizzes', category_id=category_id, page=page_num) }}">
+                               href="{{ url_for('views.categories', page=page_num) }}">
                                 {{ page_num }}
                             </a>
                         </li>
@@ -39,9 +37,9 @@
                     {% endif %}
                 {% endfor %}
                 
-                <li class="page-item {% if not quizes.has_next %}disabled{% endif %}">
+                <li class="page-item {% if not categories.has_next %}disabled{% endif %}">
                     <a class="page-link" 
-                       href="{{ url_for('views.quizzes', category_id=category_id, page=quizes.next_num) }}"
+                       href="{{ url_for('views.categories', page=categories.next_num) }}"
                        aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
