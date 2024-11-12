@@ -73,6 +73,16 @@ flask run
 - Create an admin account by registering with the username 'admin'
 - Access the admin panel at /admin, where you can add, edit, and delete quizzes and questions.
 
+- Visit the /signup route to create a new user account.
+- Visit the /login route to log in to the application.
+
+- After logging in, navigate to the /categories route to view the available quiz categories.
+- Click on a category to see the list of quizzes.
+- Click on a quiz to start taking it.
+
+- After completing a quiz, the results will be displayed, and you can choose to save your score.
+- Visit the /profile route to view your quiz history and statistics.
+
 ## API endpoints
 - `GET /api/quizzes` : Retrieve list of all quizzes
 - `GET /api/quizzes/<quiz_id>` : Retrieve specific quiz details including questions
