@@ -1,4 +1,5 @@
-from .models import Quiz 
+"""Contains the API endpoints for the app"""
+from .models import Quiz
 from . import api
 from flask_restful import Resource, fields, marshal_with
 
@@ -9,10 +10,12 @@ question_fields = {
     'option1': fields.String,
     'option2': fields.String,
     'option3': fields.String,
-    'correct_answer': fields.String  
+    'correct_answer': fields.String
 }
 
+
 class AllQuizzesResource(Resource):
+    """Retrieves a list of all quizzes."""
     quizfields = {
         'id': fields.Integer,
         'title': fields.String,
@@ -26,13 +29,15 @@ class AllQuizzesResource(Resource):
         quizzes = Quiz.query.all()
         return quizzes
 
+
 class QuizResource(Resource):
+    """Retrieves specific quiz by id"""
     quizfields = {
         'id': fields.Integer,
         'title': fields.String,
         'description': fields.String,
         'duration': fields.Integer,
-        'questions': fields.List(fields.Nested(question_fields)) 
+        'questions': fields.List(fields.Nested(question_fields))
     }
 
     @marshal_with(quizfields)
@@ -42,6 +47,7 @@ class QuizResource(Resource):
         if not quiz:
             return {'message': 'Quiz not found'}, 404
         return quiz
+
 
 api.add_resource(AllQuizzesResource, '/api/quizzes')
 api.add_resource(QuizResource, '/api/quizzes/<int:quiz_id>')

@@ -1,4 +1,4 @@
-"""Module consist of application of route"""
+"""Module consist of application's routes"""
 from flask import Blueprint, render_template, flash, redirect, request, url_for, session
 from .form import LoginForm, RegistrationForm, EditProfileForm
 from flask_login import login_user, logout_user, login_required, current_user
@@ -20,7 +20,10 @@ def index():
 
 @views.route('/login', methods=['GET', 'POST'])
 def login():
-    """Handles the login url('/login')"""
+    """
+    Handles the login url('/login')
+    Processes the login form and logs in the user.
+    """
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -39,7 +42,10 @@ def login():
 
 @views.route('/signup', methods=['GET', 'POST'])
 def signup():
-    """Handles the signup url('/signup')"""
+    """
+    Handles the signup url('/signup')
+    Processes the registration form and adds the new user to the database.
+    """
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
@@ -76,14 +82,14 @@ def signup():
 @views.route('/logout')
 @login_required
 def logout():
-    """handles logout of user"""
+    """handles loging out of user"""
     logout_user()
     return redirect(url_for('views.login'))
 
 @views.route('/categories')
 @login_required
 def categories():
-    """Handles the category url"""
+    """Handles the category url ('/categories')"""
     page = request.args.get('page', 1, type=int)
     per_page = 6
     categories = Category.query.paginate(
@@ -247,21 +253,22 @@ def profile():
         average_score = best_score = accuracy = 0
     
     recent_results = user_results[:5] 
-    
+
     taken_quiz_ids = [result.quiz_id for result in user_results]
-    available_quizzes = Quiz.query.filter(~Quiz.id.in_(taken_quiz_ids)).all() if taken_quiz_ids else Quiz.query.all()
-    
+    available_quizzes = (Quiz.query.filter(~Quiz.id.in_(taken_quiz_ids)).all() if taken_quiz_ids else Quiz.query.all())
+
     return render_template('profile.html',
                          user=current_user,
                          results=user_results,
                          recent_results=recent_results,
-                         available_quizzes=available_quizzes,
+                         available_quizzes=available_quizzes[:6],
                          stats={
                              'total_quizzes': total_quizzes,
                              'average_score': round(average_score, 1),
                              'best_score': best_score,
                              'accuracy': round(accuracy, 1)
                          })
+
 
 @views.route('/profile/edit', methods=['GET', 'POST'])
 @login_required
@@ -273,7 +280,7 @@ def edit_profile():
             if User.query.filter_by(email=form.email.data).first():
                 flash('Email already exists.', 'danger')
                 return redirect(url_for('views.edit_profile'))
-            
+
         current_user.email = form.email.data
         if form.new_password.data:
             if bcrypt.check_password_hash(current_user.password, form.current_password.data):
@@ -281,12 +288,12 @@ def edit_profile():
             else:
                 flash('Current password is incorrect.', 'danger')
                 return redirect(url_for('views.edit_profile'))
-        
+
         db.session.commit()
         flash('Your profile has been updated.', 'success')
         return redirect(url_for('views.profile'))
-    
+
     elif request.method == 'GET':
         form.email.data = current_user.email
-        
+
     return render_template('edit_profile.html', form=form)
